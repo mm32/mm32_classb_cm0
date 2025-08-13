@@ -1,0 +1,44 @@
+; ****************************************************************
+; Scatter-Loading Description File for IEC 60335 compliant project
+; ****************************************************************
+; WARNING: Class B variables and their inverse redundant parts
+; must be manually placed using the __at attributes in the 
+; stm32fxx_STLclassBvar.h file.
+; The start address of CLASSB, CLASSB_INV and RW_IRAM1 region 
+; must be manually modified to be in-line with this file.
+
+  LR_IROM1 0x08000000 0x00020000    {    ; load region size_region
+    ER_IROM1 0x08000000 0x00020000    {  ; load address = execution address
+      *.o (RESET, +First)
+      *(InRoot$$Sections)
+      .ANY (+RO)
+      .ANY (+XO)
+      *.o (CHECKSUM, +Last)
+    }
+
+    RAM_BUF 0x20000000 UNINIT 0x20 {; Run-time transparent RAM test buffer
+      IEC60730_B_startup.o (RUN_TIME_RAM_BUF)
+    }
+
+    RAM_PNT 0x20000020 UNINIT 0x10 {; Run-time transparent RAM test pointer
+      IEC60730_B_startup.o (RUN_TIME_RAM_PNT)
+    }
+
+    CLASSB 0x20000030 UNINIT 0x28 {        ; Class B variables
+    IEC60730_B_startup.o (CLASS_B_RAM)
+    }
+
+    CLASSB_INV 0x20000058 UNINIT 0x28 {              ; Class B inverted variables
+    IEC60730_B_startup.o (CLASS_B_RAM_REV)
+    }
+
+    RW_IRAM1 0x20000080  0x1B70 {     ; RW data (Class A variables)
+      .ANY (+RW +ZI)
+    }
+    
+    STACK_NO_HEAP 0x20001BF0 UNINIT 0x410 { ; Stack and magic pattern for stack overflow detection
+        IEC60730_B_startup.o (STACK_BOTTOM)
+        startup_mm32spin0280_keil.o (STACK, +Last)
+    }
+    
+  }
