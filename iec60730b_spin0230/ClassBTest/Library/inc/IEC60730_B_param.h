@@ -118,13 +118,8 @@ test, performed using March C- Algorithm */
 #define RAM_START              ((uint32_t *)0x20000000uL)
 EXTERN  void $Super$$main(void);
 
-#ifdef USE_HARDWARE_CRC
-#define CRC_FLAG               CRC->IDR
-#define GotoCompilerStartUp()  { CRC_FLAG = 0xAAu; __main(); } /* entry to init C before main() */
-#else
-EXTERN uint8_t CRC_FLAG;
-#define GotoCompilerStartUp()  { CRC_FLAG = 0xAAu; $Super$$main(); } /* entry to init C before main() */
-#endif
+#define CRC_FLAG               FLASH->AR
+#define GotoCompilerStartUp()  { CRC_FLAG = 0xAAu;  __main(); } /* entry to init C before main() */
 
 /* This is the KEIL compiler entry point, usually executed right after reset */
 extern void Reset_Handler(void);
